@@ -119,14 +119,16 @@ toolchain, use the `host` target:
 	make host
 
 As another example usage, the `avr` target provides a convenient way
-to cross-build using the avr-gcc toolchain and then dump the resulting
-disassembly for inspection:
+to cross-build using the [avr-gcc toolchain][2] and then dump the
+resulting disassembly for inspection:
 
 	make avr
 
 To use the library in your own code, there are two possible build
 scenarios.  Either way, the `include` directory should be added to the
 preprocessor include path for your project.
+
+[2]: http://www.nongnu.org/avr-libc/‎ "AVR Libc, for use with avr-gcc"
 
 
 #### Variant A: Using the static library ####
