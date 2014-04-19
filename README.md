@@ -67,6 +67,8 @@ debug code which the compiler has never had a chance to validate.
   console easy.
 + Suitable for embedded systems, leaving the choice of output function
   to the user (`fprintf()` not mandatory).
++ No wrapper functions, allowing the compiler to e.g. validate printf
+  format strings.
 + Zero runtime overhead for production builds.
 + Enable / disable debug output for individual modules at runtime.
 + Minimal runtime overhead when debugging is disabled.
