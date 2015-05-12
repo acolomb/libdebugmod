@@ -44,7 +44,7 @@ typedef char (*debug_mod_f)(
 
 /// Configuration for a single debug module
 struct debug_mod {
-    /// Setup function to decide and prepace each debug output
+    /// Setup function to decide and prepare each debug output
     debug_mod_f		func;
     /// The actual stream handle to use for output
     FILE*		stream;
