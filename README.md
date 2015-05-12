@@ -112,6 +112,12 @@ and a test program demonstrating the API.  In addition, the `dump`
 target outputs a disassembly of the test program to verify the library
 overhead.
 
+The number of debug modules which can be registered in a program is
+limited during compilation of `debug_mod.c`.  This maximum can be
+checked through the variable `debug_mod_max`.  To override it, define
+the `DEBUG_MOD_MAX` macro to a numeric value during compilation.  The
+default is **four** modules.
+
 By default, compilation is done with the build machine's standard
 tools like `cc` and `objdump`.  To test the library with this default
 toolchain, use the `host` target:
@@ -147,7 +153,7 @@ The built static library can then be regularly linked to your project
 by providing the linker with a library path:
 
 	cc -Ilibdebugmod/include/ -Llibdebugmod/src/ \
-		myproject.o -ldebugmod -o myproject
+		myproject.c -ldebugmod -o myproject
 
 Or by directly referencing the archive file:
 
@@ -295,12 +301,6 @@ debug modules.  The default output stream is always `stderr`.
 	}
 ~~~~~~~~~~~~~
 
-The number of debug modules which can be registered in a program is
-limited during compilation of `debug_mod.c`.  This maximum can be
-checked through the variable `debug_mod_max`.  To override it, define
-the `DEBUG_MOD_MAX` macro to a numeric value during compilation.  The
-default is **four** modules.
-
 
 ### Dynamic module reconfiguration (optional) ###
 
@@ -356,3 +356,28 @@ Additional functions exposed are:
 	// ... during next run, load my_config again, then:
 	debug_mod_restore(my_config, sizeof(my_config) / sizeof(*my_config));
 ~~~~~~~~~~~~~
+
+
+Demo program
+------------
+
+The source code includes a small demo program illustrating all of the
+features named above.  Inside the `src/` directory, look at the files
+`test_debug_mod.c` and `test_ext_module.c`.  The `Makefile` includes a
+target to compile and run this demo using the host toolchain.  Note
+that the preprocessor macros to enable features **must be defined
+during this compilation step**.
+
+	make -C libdebugmod/src/ \
+		CPPFLAGS="-DDEBUG_MOD_ENABLE -DDEBUG_MOD_DYNAMIC -DDEBUG_MOD_SAVE" \
+		clean test
+
+Two compilation units are tested, using the preprocessor's special
+`__FILE__` macro for the module identifier.  The `test_debug_mod.c`
+module contains different example implementations for setup functions,
+prepending the stream output with varying context information.
+
+The test calls for API functions are all documented and use the
+optional API if enabled.  The `main()` function demonstrates debug
+output from an external module and its own, with various configuration
+changes in between.
