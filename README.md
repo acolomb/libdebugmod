@@ -128,7 +128,7 @@ To use the library in your own code, there are two possible build
 scenarios.  Either way, the `include` directory should be added to the
 preprocessor include path for your project.
 
-[2]: http://www.nongnu.org/avr-libc/‎ "AVR Libc, for use with avr-gcc"
+[2]: http://www.nongnu.org/avr-libc/ "AVR Libc, for use with avr-gcc"
 
 
 #### Variant A: Using the static library ####
