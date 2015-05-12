@@ -99,12 +99,6 @@ test_local(void)
 #endif
     DEBUGF(fprintf, "update to indent, stderr\n");
 
-    // Disable output for this module
-#ifdef DEBUG_MOD_DYNAMIC
-    debug_mod_disable(__FILE__);
-#endif
-    DEBUGF(fprintf, "should be disabled!\n");
-
     // Test configuration saving
 #ifdef DEBUG_MOD_SAVE
     debug_mod_index_t size, i;
@@ -120,6 +114,12 @@ test_local(void)
     }
     debug_mod_restore(foo, sizeof(foo) / sizeof(*foo));
 #endif
+
+    // Disable output for this module
+#ifdef DEBUG_MOD_DYNAMIC
+    debug_mod_disable(__FILE__);
+#endif
+    DEBUGF(fprintf, "should be disabled!\n");
 }
 
 
