@@ -229,6 +229,7 @@ With *libdebugmod*, the calls should look like this:
 ~~~~~~~~~~~~~
 
 The `DEBUGF()` and `DEBUGL()` macros expand to a code block which
+
 1. Is optimized away when `DEBUG_MOD_ENABLE` was not defined.
 2. Evaluates a configured callback function to decide whether debug
    output is desired for the current module.
