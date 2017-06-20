@@ -29,6 +29,7 @@ CFLAGS = -O1 -g
 # Additional flags, always used
 override CFLAGS += -std=c99 -Wall -Wextra -Wstrict-prototypes -Werror
 override CPPFLAGS += -I../include
+ARFLAGS += -U
 
 RANLIB = ranlib
 OBJDUMP = objdump
@@ -44,6 +45,12 @@ dump: $(TESTBIN)
 
 test: $(TESTBIN)
 	./$(TESTBIN)
+
+test-enabled: CPPFLAGS += -DDEBUG_MOD_ENABLE
+test-enabled: test
+
+test-full: CPPFLAGS += -DDEBUG_MOD_DYNAMIC -DDEBUG_MOD_SAVE
+test-full: test-enabled
 
 # Compile native test binary for build architecture and run test
 host: clean lib test
