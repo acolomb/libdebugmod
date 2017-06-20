@@ -35,6 +35,9 @@ typedef unsigned char debug_mod_index_t;
 extern const debug_mod_index_t debug_mod_max;
 
 
+///@name Default module configuration
+///@{
+
 ///@brief Pre-record configuration for a debug module
 ///
 /// This function can be called for a module identifier which has
@@ -47,7 +50,9 @@ extern const debug_mod_index_t debug_mod_max;
 ///        - Zero on failure (list full)
 char debug_mod_register(
     debug_mod* restrict dm		///< [in] Configuration structure
-    );
+);
+
+///@}
 
 
 #ifdef DEBUG_MOD_DYNAMIC
@@ -68,7 +73,7 @@ void debug_mod_update(
     const char* restrict module,	///< [in] Module to configure or NULL for all known
     debug_mod_f func,			///< [in] Override output prepare function
     FILE* restrict stream		///< [in] Override output stream
-    );
+);
 
 ///@brief Disable debugging for one or all known modules
 ///
@@ -77,7 +82,7 @@ void debug_mod_update(
 /// the parameter to NULL to match all registered modules.
 void debug_mod_disable(
     const char* module			///< [in] Module to disable or NULL for all known
-    );
+);
 
 ///@}
 #endif //DEBUG_MOD_DYNAMIC
@@ -101,7 +106,7 @@ void debug_mod_disable(
 ///@return Start of the address list or NULL on error (wrong argument)
 const debug_mod *const * debug_mod_list(
     debug_mod_index_t *size		///< [out] Where to write the list size
-    );
+);
 
 ///@brief Save current module configurations to the provided array
 ///
@@ -112,7 +117,7 @@ const debug_mod *const * debug_mod_list(
 debug_mod_index_t debug_mod_save(
     debug_mod saved[],			///< [out] Configuration array to overwrite
     debug_mod_index_t size		///< [in] Number of elements in the array
-    );
+);
 
 ///@brief Restore saved module configurations
 ///
@@ -123,7 +128,7 @@ debug_mod_index_t debug_mod_save(
 debug_mod_index_t debug_mod_restore(
     debug_mod saved[],			///< [in] Configuration array to read
     debug_mod_index_t size		///< [in] Number of elements in the array
-    );
+);
 
 ///@}
 #endif //DEBUG_MOD_SAVE

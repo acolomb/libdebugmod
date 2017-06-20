@@ -40,7 +40,7 @@ typedef struct debug_mod debug_mod;
 typedef char (*debug_mod_f)(
     debug_mod* self,			///< [in] Access to the module configuration
     const char* restrict context	///< [in] Name of the calling function
-    );
+);
 
 /// Configuration for a single debug module
 struct debug_mod {
@@ -68,13 +68,18 @@ extern debug_mod_f debug_mod_default_func;
 char debug_mod_init(
     debug_mod* self,			///< [in] The module's debug configuration
     const char* restrict context	///< [in] Name of the calling function
-    );
+);
 
+
+///@name Setup functions
+///@{
 
 #ifdef DEBUG_MOD_ENABLE
+
 #undef DEBUG_MOD_ENABLE
 /// Compile time switch to enable debug output
 #define DEBUG_MOD_ENABLE 1	//dummy value for true condition
+
 ///@brief Set up debugging for the current module
 ///
 /// Calling this macro once per module is a prerequisite to use any
@@ -82,41 +87,52 @@ char debug_mod_init(
 ///
 ///@param modulestring Module identifier to register
 #define DEBUG_MOD_INIT(modulestring)		\
-    static debug_mod _debug_mod = {	\
+    static debug_mod _debug_mod = {		\
 	.func	= debug_mod_init,		\
 	.stream	= NULL,				\
 	.module	= (modulestring),		\
     };
-#else
+
+#else //DEBUG_MOD_ENABLE not defined
+
 /// Compile time switch to enable debug output
 #define DEBUG_MOD_ENABLE 0	//dummy value for false condition
+
 ///@brief Set up debugging for the current module
 ///
 ///@param modulestring Module identifier to register
 #define DEBUG_MOD_INIT(modulestring)		\
-    static debug_mod _debug_mod = {	\
+    static debug_mod _debug_mod = {		\
 	.func	= NULL,				\
 	.stream	= NULL,				\
 	.module	= (modulestring),		\
     };
-#endif
+
+#endif //DEBUG_MOD_ENABLE
+
 
 /// Directly access module's own debugging stream
-#define debug_mod_get_stream()		\
+#define debug_mod_get_stream()			\
     (_debug_mod.stream)
 /// Reconfigure module's own debugging stream
-#define debug_mod_set_stream(s)		\
+#define debug_mod_set_stream(s)			\
     { _debug_mod.stream = (s); }
 /// Reconfigure module's own debugging function
-#define debug_mod_set_func(f)		\
+#define debug_mod_set_func(f)			\
     { _debug_mod.func = (f); }
 /// Disable debugging in current module during runtime
 #define debug_mod_disable_self()		\
     { debug_mod_set_func(NULL); }
 
+///@}
+
+
+///@name Basic API for debug output
+///@{
+
 /// Condition statement to check if debugging is enabled and call
 /// output prepare function
-#define DEBUG_CONDITION					\
+#define DEBUG_CONDITION				\
     if (DEBUG_MOD_ENABLE && _debug_mod.func &&	\
 	_debug_mod.func(&_debug_mod, __func__))
 
@@ -145,5 +161,8 @@ char debug_mod_init(
 #define DEBUGL(f, ...) {				\
 	DEBUG_CONDITION					\
 	    f(__VA_ARGS__, _debug_mod.stream); }
+
+///@}
+
 
 #endif //DEBUG_MOD_H_
