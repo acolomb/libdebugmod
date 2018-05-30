@@ -147,7 +147,7 @@ char debug_mod_init(
 ///@param ...	Additional trailing arguments passed to function
 #define DEBUGF(f, ...) {				\
 	DEBUG_CONDITION					\
-	    f(_debug_mod.stream, __VA_ARGS__); }
+	    f(debug_mod_get_stream(), __VA_ARGS__); }
 
 ///@brief Call function with configured stream as last argument.
 ///
@@ -160,7 +160,7 @@ char debug_mod_init(
 ///@param ...	Additional leading arguments passed to function
 #define DEBUGL(f, ...) {				\
 	DEBUG_CONDITION					\
-	    f(__VA_ARGS__, _debug_mod.stream); }
+	    f(__VA_ARGS__, debug_mod_get_stream()); }
 
 ///@}
 
