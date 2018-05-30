@@ -137,7 +137,7 @@ preprocessor include path for your project.
 [2]: http://www.nongnu.org/avr-libc/ "AVR Libc, for use with avr-gcc"
 
 
-#### Variant A: Using the static library ####
+#### Variant A: Using the Static Library ####
 
 When building a native host application or if you just want a binary
 file for use in projects, make the `lib` target in the provided
@@ -161,7 +161,7 @@ Or by directly referencing the archive file:
 		myproject.c libdebugmod/src/libdebugmod.a -o myproject
 
 
-#### Variant B: Direct linking ####
+#### Variant B: Direct Linking ####
 
 If the library source resides within your project directory, it may be
 easier to just include the source file for the API functions in your
@@ -181,7 +181,7 @@ source files.  Example Makefile excerpt:
 	myproject: myproject.c $(DEBUGMOD_DIR)/src/debug_mod.c
 
 
-Basic API for debug output
+Basic API for Debug Output
 --------------------------
 
 To employ any *libdebugmod* functionality in one of your code modules,
@@ -249,7 +249,7 @@ The `DEBUG_CONDITION` macro expands to an `if (...)` statement with
 the described behaviour.
 
 
-Runtime management API
+Runtime Management API
 ----------------------
 
 More advanced control over the debug output experience can be
@@ -268,7 +268,7 @@ the basic API for debug output can be used as well after
 initialization with `DEBUG_MOD_INIT()` (see above).
 
 
-### Default module configuration ###
+### Default Module Configuration ###
 
 In addition the function `debug_mod_register()` is declared and can be
 used to configure a debug module in advance.  Normally, each module's
@@ -302,7 +302,7 @@ debug modules.  The default output stream is always `stderr`.
 ~~~~~~~~~~~~~
 
 
-### Dynamic module reconfiguration (optional) ###
+### Dynamic Module Reconfiguration (optional) ###
 
 This part of the control API is optional and only available if the
 macro `DEBUG_MOD_DYNAMIC` was defined before including
@@ -331,7 +331,7 @@ to all modules that have already been registered (explicitly or
 automatically).
 
 
-### Save and restore configuration (optional) ###
+### Save and Restore Configuration (optional) ###
 
 This part of the control API is optional and only available if the
 macro `DEBUG_MOD_SAVE` was defined before including
@@ -358,7 +358,7 @@ Additional functions exposed are:
 ~~~~~~~~~~~~~
 
 
-Demo program
+Demo Program
 ------------
 
 The source code includes a small demo program illustrating all of the
