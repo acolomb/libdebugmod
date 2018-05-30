@@ -28,7 +28,7 @@
 
 
 // Lazy initialization using source file name as identifier
-DEBUG_MOD_INIT(__FILE__);
+DEBUG_MOD_INIT(__FILE__)
 
 
 
