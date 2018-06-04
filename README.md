@@ -252,34 +252,67 @@ the described behaviour.
 Runtime Management API
 ----------------------
 
-More advanced control over the debug output experience can be
-exercised using the API provided in `debug_mod_control.h`.  To access
-the respective API, you need to:
+The library allows to flexibly reconfigure each module at run-time.
+The callback function deciding whether to execute the debug statements
+can be exchanged, or entirely suppressed.  Switching the output stream
+passed in `DEBUGF()` and `DEBUGL()` statements is also supported.
+
+These configuration changes can be done from within each module for
+its own settings, as well as through a module-external API to allow
+for centralized management of debug facilities by the user.
+
+
+### Self-Configuration Within Modules ###
+
+Each module's own current output stream can be accessed directly
+through `debug_mod_get_stream()` and modified using
+`debug_mod_set_stream()`.  The default output stream at initialization
+is always `stderr`.
+
+Initially, each module's configuration is initialized to use the
+callback function address stored in `debug_mod_default_func`.  Set the
+latter during early program initialization to provide a default
+callback instead of disabling all debug modules.
+
+Replacing the callback function is done via `debug_mod_set_func()`,
+where a function pointer of type `debug_mod_f` must be passed in.
+Setting the callback to `NULL` disables debugging output for this
+module altogether, which is equivalent to `debug_mod_disable_self()`.
+
+
+### External Reconfiguration API ###
+
+Other modules can control the debug output experience using the API
+provided in `debug_mod_control.h`.  To access the respective API, you
+need to:
 
 ~~~~~~~~~~~~~{c}
 
-	#define DEBUG_MOD_DYNAMIC	// This is optional
-	#define DEBUG_MOD_SAVE		// This is optional
+	#define DEBUG_MOD_DYNAMIC	// This is optional (see below)
+	#define DEBUG_MOD_SAVE		// This is optional (see below)
 	#include <debug_mod_control.h>
 ~~~~~~~~~~~~~
 
 This header file also pulls in the standard `debug_mod.h` header, so
-the basic API for debug output can be used as well after
-initialization with `DEBUG_MOD_INIT()` (see above).
+the basic API for debug output can be used regularly after
+initialization with `DEBUG_MOD_INIT()` (see above).  In addition the
+function `debug_mod_register()` is declared and can be used to
+configure a debug module in advance.
 
+Each module's configuration is lazily initialized during the first
+evaluation of the `DEBUG_CONDITION`, for example when first reaching a
+`DEBUGF()` call.  At this time, the `debug_mod_init()` function
+arranges two things:
 
-### Default Module Configuration ###
+  1. Make sure the module's identifier is registered in a central list
+     using `debug_mod_register()`.
+  2. Apply the `debug_mod_default_func` address (typically `NULL`),
+     unless the module has already been registered, in which case the
+     pre-recorded configuration is used.
 
-In addition the function `debug_mod_register()` is declared and can be
-used to configure a debug module in advance.  Normally, each module's
-configuration is initialized during the first evaluation of the
-`DEBUG_CONDITION`, for example when first reaching a `DEBUGF()` call.
-The initial callback function configured for each module is
-`debug_mod_init()`, which internally calls `debug_mod_register()` and
-then replaces itself with whatever function address is stored in
-`debug_mod_default_func`.  Use the latter during early program
-initialization to provide a default callback instead of disabling all
-debug modules.  The default output stream is always `stderr`.
+This logic allows to enumerate modules and their individual settings
+from a central place using `debug_mod_register()` during program
+initialization, like in the following example.
 
 ~~~~~~~~~~~~~{c}
 
@@ -291,12 +324,15 @@ debug modules.  The default output stream is always `stderr`.
 	}
 
 	int main(void) {
-		// Enable debug output to stderr by default
+		// Enable debug output to stderr by default for any module
 		debug_mod_default_func = cb_context;
 
 		// Override a specific module's default stream
 		debug_mod dm = { cb_context, stdout, "my module" };
 		debug_mod_register(&dm);
+
+		/* main program logic */
+
 		return 0;
 	}
 ~~~~~~~~~~~~~
@@ -314,7 +350,7 @@ the static library, for example:
 Additional functions exposed are `debug_mod_update()` and
 `debug_mod_disable()`.  In contrast to `debug_mod_register()`, they
 can be used to alter modules' configurations anytime _after_ they have
-been registered and used.
+been registered and used, from outside the affected module.
 
 ~~~~~~~~~~~~~{c}
 
