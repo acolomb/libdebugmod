@@ -40,11 +40,11 @@ lib: $(LIB)
 clean:
 	$(RM) $(TESTBIN) $(LIB) $(OBJ)
 
-dump: $(TESTBIN)
+dump: test_debug_mod
 	$(OBJDUMP) -dS $< #-j .text
 
-test: $(TESTBIN)
-	./$(TESTBIN)
+test: test_debug_mod
+	./$<
 
 test-enabled: CPPFLAGS += -DDEBUG_MOD_ENABLE
 test-enabled: test
@@ -69,4 +69,4 @@ avr: clean lib dump
 $(LIB): $(LIB)($(OBJ))
 	$(RANLIB) $@
 
-$(TESTBIN): test_debug_mod.c test_ext_module.c $(LIB)
+test_debug_mod: test_debug_mod.c test_ext_module.c $(LIB)
