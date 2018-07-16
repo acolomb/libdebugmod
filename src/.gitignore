@@ -1,3 +1,4 @@
 *.a
 *.o
 /test_debug_mod
+/test_incremental_search
