@@ -53,7 +53,7 @@ test-full: CPPFLAGS += -DDEBUG_MOD_DYNAMIC -DDEBUG_MOD_SAVE
 test-full: test-enabled
 
 # Compile native test binary for build architecture and run test
-host: clean lib test
+host: clean test-full
 
 # Compile as native library for build architecture
 avr: CC = avr-gcc
