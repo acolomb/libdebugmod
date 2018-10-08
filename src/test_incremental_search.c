@@ -2,7 +2,18 @@
 ///@brief	Incremental module search test program
 ///@copyright	Copyright (C) 2018  Andre Colomb
 ///
-/// This file is part of libdebugmod.
+/// This file is part of libdebugmod.  It serves as demo code and
+/// implements an efficient incremental string search algorithm to
+/// search for a module by name.  Incoming characters are matched
+/// against the list of registered debug modules, always returning the
+/// first (partial) match from the list.
+///
+/// The functions build_search_table(), reset_search() and
+/// incremental_search() can be adapted and reused for appropriate
+/// applications.  They shall serve as another, more elaborate example
+/// what is possible with the debug_mod_list() API.  Debug output from
+/// this test itself is disabled (DEBUG_MOD_ENABLE undefined) by
+/// default, but the search progress is output to stdout.
 ///
 /// libdebugmod is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -231,11 +242,13 @@ main(void)
 	if (c == search_terminator) {	//end of search string
 	    if (cursor) {	//all characters matched so far
 		if (strlen(cursor) == 0) {	//complete match
-		    printf("\tExact match %u: %s\n", mod_index, search_table[mod_index].id);
+		    printf("\tExact match %u: %s\n"
+			   "---\n", mod_index, search_table[mod_index].id);
 		    // Now reconfigure the module (example application)
 		    mods[mod_index]->stream = stderr;
 		} else {
-		    printf("\tPartial match %u: %s\n", mod_index, search_table[mod_index].id);
+		    printf("\tPartial match %u: %s\n"
+			   "---\n", mod_index, search_table[mod_index].id);
 		}
 	    }
 	    // Get ready for next search
