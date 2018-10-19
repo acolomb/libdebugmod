@@ -394,8 +394,8 @@ Additional functions exposed are:
 ~~~~~~~~~~~~~
 
 
-Demo Program
-------------
+Demo Programs
+-------------
 
 The source code includes a small demo program illustrating all of the
 features named above.  Inside the `src/` directory, look at the files
@@ -417,3 +417,13 @@ The test calls for API functions are all documented and use the
 optional API if enabled.  The `main()` function demonstrates debug
 output from an external module and its own, with various configuration
 changes in between.
+
+Another example lives in `test_incremental_search.c` and shows a more
+sophisticated usage of the runtime management API.  It implements a
+rather efficient incremental string search algorithm to match a
+(partial) input against the list of registered debug modules,
+exercising the `debug_mod_list()` function.  Use the following
+`Makefile` target to run the example code with appropriate macro
+definitions already included.
+
+	make -C libdebugmod/src/ clean test-search
