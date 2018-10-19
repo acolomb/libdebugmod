@@ -98,13 +98,13 @@ void debug_mod_disable(
 
 ///@brief Access the list of known debug modules
 ///
-/// The returned pointer provides read-only access to the
-/// configuration for all known modules through a list of addresses.
-/// The number of elements is returned in the size parameter.  The
-/// list may contain NULL values.
+/// The returned pointer provides access to the configuration for all
+/// known modules through a list of addresses.  The number of elements
+/// is returned in the size parameter.  The list may contain NULL
+/// values.
 ///
 ///@return Start of the address list or NULL on error (wrong argument)
-const debug_mod *const * debug_mod_list(
+debug_mod *const * debug_mod_list(
     debug_mod_index_t *size		///< [out] Where to write the list size
 );
 

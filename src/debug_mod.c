@@ -157,13 +157,13 @@ debug_mod_disable(const char* module)
 
 
 #ifdef DEBUG_MOD_SAVE
-const debug_mod *const *
+debug_mod *const *
 debug_mod_list(debug_mod_index_t *size)
 {
     if (! size) return NULL;
 
     *size = debug_mod_max;
-    return (const debug_mod *const *) mods;
+    return (debug_mod *const *) mods;
 }
 
 

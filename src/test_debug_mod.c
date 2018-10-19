@@ -103,7 +103,7 @@ test_local(void)
 #ifdef DEBUG_MOD_SAVE
     debug_mod_index_t size, i;
     debug_mod foo[debug_mod_max];
-    const debug_mod *const *bars;
+    debug_mod *const *bars;
 
     debug_mod_save(foo, sizeof(foo) / sizeof(*foo));
     bars = debug_mod_list(&size);

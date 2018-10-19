@@ -22,7 +22,7 @@
 # Definition of target file names
 OBJ = debug_mod.o
 LIB = libdebugmod.a
-TESTBIN = test_debug_mod
+TESTBIN = test_debug_mod test_incremental_search
 
 # Default compilation flags useful for code dump, can be changed from command line
 CFLAGS = -O1 -g
@@ -33,6 +33,7 @@ ARFLAGS += -U
 
 RANLIB = ranlib
 OBJDUMP = objdump
+ECHO = /bin/echo
 
 # Default target: Compile native library
 lib: $(LIB)
@@ -40,20 +41,26 @@ lib: $(LIB)
 clean:
 	$(RM) $(TESTBIN) $(LIB) $(OBJ)
 
-dump: $(TESTBIN)
+dump: test_debug_mod
 	$(OBJDUMP) -dS $< #-j .text
 
-test: $(TESTBIN)
-	./$(TESTBIN)
+test: test_debug_mod
+	./$<
 
 test-enabled: CPPFLAGS += -DDEBUG_MOD_ENABLE
+test-enabled: CPPFLAGS += -DDEBUG_MOD_MAX=10
 test-enabled: test
 
 test-full: CPPFLAGS += -DDEBUG_MOD_DYNAMIC -DDEBUG_MOD_SAVE
 test-full: test-enabled
 
+test-search: test_incremental_search
+	$(ECHO) -e "fail\nfoo\nbar\nfrob\nfrobnicate\nfrog\nfa\nfar\nfoofoo\nfarfalle" \
+		| ./$<
+
+
 # Compile native test binary for build architecture and run test
-host: clean lib test
+host: clean test-full test-search
 
 # Compile as native library for build architecture
 avr: CC = avr-gcc
@@ -69,4 +76,9 @@ avr: clean lib dump
 $(LIB): $(LIB)($(OBJ))
 	$(RANLIB) $@
 
-$(TESTBIN): test_debug_mod.c test_ext_module.c $(LIB)
+test_debug_mod: test_debug_mod.c test_ext_module.c $(LIB)
+
+test_incremental_search: CPPFLAGS += -DDEBUG_MOD_ENABLE
+test_incremental_search: CPPFLAGS += -DDEBUG_MOD_SAVE
+test_incremental_search: CPPFLAGS += -DDEBUG_MOD_MAX=10
+test_incremental_search: test_incremental_search.c $(LIB)
