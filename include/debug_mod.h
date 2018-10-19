@@ -57,12 +57,29 @@ struct debug_mod {
 extern debug_mod_f debug_mod_default_func;
 
 
-///@brief Initialize and register debug module on first usage
+///@brief Register debug module before first usage
 ///
 /// The given configuration structure is centrally registered to allow
-/// later reconfiguration.  If debug_mod_default_func is set, or a
+/// later reconfiguration.  The function and stream configuration is
+/// reset from any already registered configuration with the same
+/// module identifier, or reset to default values.  If this function
+/// is not used, a lazy initialization will be done using
+/// debug_mod_init() upon first usage.
+///
+/// Note that a failed registration is not indicated, but
+/// debug_mod_get_stream() can be checked for validity instead.
+void debug_mod_preinit(
+    debug_mod* self			///< [in] The module's debug configuration
+);
+
+///@brief Initialize and register debug module lazily on first usage
+///
+/// This output prepare function is initially used during the first
+/// evaluation of a DEBUG_CONDITION to lazily register the given
+/// configuration structure.  If debug_mod_default_func is set, or a
 /// configuration was already registered with the same module
 /// identifier, its associated output prepare function is then called.
+/// Uses debug_mod_preinit() internally.
 ///
 ///@see debug_mod_f
 char debug_mod_init(
@@ -123,6 +140,9 @@ char debug_mod_init(
 /// Disable debugging in current module during runtime
 #define debug_mod_disable_self()		\
     { debug_mod_set_func(NULL); }
+/// Make sure the current module is registered, without calling an output prepare function
+#define debug_mod_register_self()		\
+    { debug_mod_preinit(&_debug_mod); }
 
 ///@}
 
