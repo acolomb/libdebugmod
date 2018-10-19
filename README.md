@@ -337,6 +337,14 @@ initialization, like in the following example.
 	}
 ~~~~~~~~~~~~~
 
+In some setups, a central module list may not be desired, but at some
+point in time a complete enumeration of all registered modules is
+needed.  However, the lazy initialization only happens upon the first
+evaluation of the `DEBUG_CONDITION`, which implies all side-effects of
+the respective output prepare function.  To avoid these, use
+`debug_mod_register_self()` within each module, forcing registration
+early in the program startup.
+
 
 ### Dynamic Module Reconfiguration (optional) ###
 
