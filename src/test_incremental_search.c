@@ -89,12 +89,12 @@ build_search_table(void)
 	if (mods[i]) {		//valid list entry
 	    search_table[i].id = mods[i]->module;
 	    search_table[i].len = strlen(mods[i]->module);
-	    MSG("%i=%s\n", i, mods[i]->module);
+	    MSG("%u=%s\n", i, mods[i]->module);
 	    if (! cursor) cursor = search_table[i].id;
 	} else {		//invalid entry
 	    search_table[i].id = NULL;
 	    search_table[i].len = 0;
-	    MSG("%i empty\n", i);
+	    MSG("%u empty\n", i);
 	}
     }
 }
@@ -132,11 +132,12 @@ incremental_search(
 {
     MSG("new character %c, cursor@%p\n", c, cursor);
 
-    ptrdiff_t progress = cursor - search_table[mod_index].id;
+    // Careful: cursor can only ever point at or after the current search table entry's id
+    unsigned progress = cursor - search_table[mod_index].id;
 
     if (progress < search_table[mod_index].len) {
 	if (c == *cursor) {
-	    MSG("\t%u: matched [+%td], advance\n", mod_index, progress);
+	    MSG("\t%u: matched [+%u], advance\n", mod_index, progress);
 	    // Advance pointer for next iteration
 	    ++cursor;
 	    return;
@@ -162,12 +163,12 @@ incremental_search(
 	    continue;
 	}
 	cursor = search_table[mod_index].id + progress;
-	MSG("\t%u: new pos: [+%td] cursor@%p\n", mod_index, progress, cursor);
+	MSG("\t%u: new pos: [+%u] cursor@%p\n", mod_index, progress, cursor);
 	if (c != *cursor) {
 	    MSG("\tskip: char mismatch\n");
 	    continue;
 	}
-	MSG("\tchar match, strncmp(%td)\n", progress);
+	MSG("\tchar match, strncmp(%u)\n", progress);
 	if (strncmp(old_id, search_table[mod_index].id, progress)) {
 	    MSG("\tskip: prefix mismatch\n");
 	    continue;
@@ -202,6 +203,7 @@ search_init(void)
     debug_mod_index_t dummy;
 
     mods = debug_mod_list(&dummy);
+    // Makes sure this module itself is registered and included in the search table
     MSG("list of %u mods\n", dummy);
 
     build_search_table();
