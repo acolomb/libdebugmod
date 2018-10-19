@@ -269,15 +269,23 @@ through `debug_mod_get_stream()` and modified using
 `debug_mod_set_stream()`.  The default output stream at initialization
 is always `stderr`.
 
-Initially, each module's configuration is initialized to use the
-callback function address stored in `debug_mod_default_func`.  Set the
-latter during early program initialization to provide a default
+Initially, each module's configuration is lazily initialized to use
+the callback function address stored in `debug_mod_default_func`.  Set
+the latter during early program initialization to provide a default
 callback instead of disabling all debug modules.
 
 Replacing the callback function is done via `debug_mod_set_func()`,
 where a function pointer of type `debug_mod_f` must be passed in.
 Setting the callback to `NULL` disables debugging output for this
 module altogether, which is equivalent to `debug_mod_disable_self()`.
+
+In some setups, a central module list may not be desired, but at some
+point in time a complete enumeration of all registered modules is
+needed.  However, the lazy initialization only happens upon the first
+evaluation of the `DEBUG_CONDITION`, which implies all side-effects of
+the respective callback function.  To avoid these, use
+`debug_mod_register_self()` within each module, forcing registration
+early in the program startup.
 
 
 ### External Reconfiguration API ###
@@ -336,14 +344,6 @@ initialization, like in the following example.
 		return 0;
 	}
 ~~~~~~~~~~~~~
-
-In some setups, a central module list may not be desired, but at some
-point in time a complete enumeration of all registered modules is
-needed.  However, the lazy initialization only happens upon the first
-evaluation of the `DEBUG_CONDITION`, which implies all side-effects of
-the respective output prepare function.  To avoid these, use
-`debug_mod_register_self()` within each module, forcing registration
-early in the program startup.
 
 
 ### Dynamic Module Reconfiguration (optional) ###
