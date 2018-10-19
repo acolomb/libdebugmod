@@ -80,9 +80,8 @@ debug_mod_register(debug_mod* restrict dm)
 
 
 
-char
-debug_mod_init(debug_mod* restrict self,
-	       const char* restrict context)
+inline void
+debug_mod_preinit(debug_mod* restrict self)
 {
     char r = debug_mod_register(self);
 
@@ -90,6 +89,15 @@ debug_mod_init(debug_mod* restrict self,
 	self->func = debug_mod_default_func;
 	self->stream = stderr;
     }
+}
+
+
+
+char
+debug_mod_init(debug_mod* restrict self,
+	       const char* restrict context)
+{
+    debug_mod_preinit(self);
     if (self->func) return self->func(self, context);
     return 0;
 }
