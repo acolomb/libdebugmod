@@ -285,7 +285,8 @@ needed.  However, the lazy initialization only happens upon the first
 evaluation of the `DEBUG_CONDITION`, which implies all side-effects of
 the respective callback function.  To avoid these, use
 `debug_mod_register_self()` within each module, forcing registration
-early in the program startup.
+early in the program startup.  The `incremental_string_search.c` demo
+program (explained below) includes such a usecase.
 
 
 ### External Reconfiguration API ###

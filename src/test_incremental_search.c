@@ -204,6 +204,8 @@ search_init(void)
 
     mods = debug_mod_list(&dummy);
     // Makes sure this module itself is registered and included in the search table
+    debug_mod_register_self();
+    // This would also implicitly trigger the registration
     MSG("list of %u mods\n", dummy);
 
     build_search_table();
