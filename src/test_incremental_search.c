@@ -37,7 +37,6 @@
 #include <debug_mod_control.h>
 
 #include <string.h>
-#include <stddef.h>
 
 
 
@@ -45,6 +44,9 @@
 DEBUG_MOD_INIT(__FILE__)
 
 
+
+/// Short-hand to evaluate the number of array entries
+#define ENTRIES(arr)	(sizeof(arr) / sizeof(*(arr)))
 
 /// Convenience macro to output debug message
 #define MSG(fmt, ...)		DEBUGF(fprintf, (fmt), ##__VA_ARGS__)
@@ -62,7 +64,7 @@ struct search_entry {
     unsigned		len;
 };
 /// Cache table with known module IDs, same size as the module list
-struct search_entry search_table[DEBUG_MOD_MAX];
+static struct search_entry search_table[DEBUG_MOD_MAX];
 
 /// List / table index of the last matched module
 static debug_mod_index_t mod_index;
@@ -85,7 +87,7 @@ build_search_table(void)
     mod_index = 0;
     cursor = NULL;
     // Copy identifier addresses and pre-determine string lengths
-    for (i = 0; i < sizeof(search_table) / sizeof(*search_table); ++i) {
+    for (i = 0; i < ENTRIES(search_table); ++i) {
 	if (mods[i]) {		//valid list entry
 	    search_table[i].id = mods[i]->module;
 	    search_table[i].len = strlen(mods[i]->module);
@@ -119,7 +121,7 @@ reset_search(void)
 	    cursor = search_table[mod_index].id;
 	    break;
 	}
-    } while (++mod_index < sizeof(search_table) / sizeof(*search_table));
+    } while (++mod_index < ENTRIES(search_table));
     MSG("start index %u, cursor@%p\n", mod_index, cursor);
 }
 
@@ -151,7 +153,7 @@ incremental_search(
     // Save currently matching string for later comparison
     const char *old_id = search_table[mod_index].id;
     // Advance to next module
-    while (++mod_index < sizeof(search_table) / sizeof(*search_table)) {
+    while (++mod_index < ENTRIES(search_table)) {
 	MSG("\t%u: next mod @%p: %s\n",
 	    mod_index, search_table[mod_index].id, search_table[mod_index].id);
 	if (! search_table[mod_index].id) {
@@ -232,7 +234,7 @@ main(void)
     };
 
     // Prefill the modules list with dummy entries
-    for (debug_mod_index_t i = 0; i < sizeof(dm) / sizeof(*dm); ++i) {
+    for (debug_mod_index_t i = 0; i < ENTRIES(dm); ++i) {
 	debug_mod_register(dm + i);
     }
 
