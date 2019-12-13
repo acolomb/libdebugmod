@@ -150,11 +150,16 @@ char debug_mod_init(
 ///@name Basic API for debug output
 ///@{
 
+#ifndef DEBUG_MOD_CONTEXT
+/// Second argument passed to the setup function, defaults to calling function name macro
+#define DEBUG_MOD_CONTEXT		__func__
+#endif
+
 /// Condition statement to check if debugging is enabled and call
 /// output prepare function
 #define DEBUG_CONDITION				\
     if (DEBUG_MOD_ENABLE && _debug_mod.func &&	\
-	_debug_mod.func(&_debug_mod, __func__))
+	_debug_mod.func(&_debug_mod, DEBUG_MOD_CONTEXT))
 
 ///@brief Call function with configured stream as first argument.
 ///
