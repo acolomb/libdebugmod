@@ -248,6 +248,15 @@ output, for example to open a log file only when debugging is enabled.
 The `DEBUG_CONDITION` macro expands to an `if (...)` statement with
 the described behaviour.
 
+The callback function serves two main purposes: a) Controlling whether
+the specific debug statement should be executed by returning a
+non-zero value and b) "preparing" the debug output, such as writing a
+prefix (timestamp, etc.) to the output stream.  In addition to the
+current module's debug configuration, it is passed a string describing
+the calling context.  By default, the `__func__` magic preprocessor
+macro is used, but can be overridden setting `DEBUG_MOD_CONTEXT` to
+any expression evaluating to a string at runtime.
+
 
 Runtime Management API
 ----------------------
