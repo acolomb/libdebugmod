@@ -117,9 +117,8 @@ debug_mod_update_config(
     if (! dm) return;
 
     for (debug_mod_index_t i = 0; i < debug_mod_max; ++i) {
-	if (mods[i] == NULL) {	//first empty slot
-	    break;
-	} else if (! dm->module) {	//no module specified, do all
+	if (mods[i] == NULL) break;	//first empty slot
+	if (! dm->module) {	//no module specified, do all
 	    debug_mod_copy_config(mods[i], dm);
 	} else if (mods[i]->module
 		   && 0 == strcmp(mods[i]->module, dm->module)) {
@@ -184,11 +183,8 @@ debug_mod_save(debug_mod saved[],
 
     // Loop through module list
     for (i = 0; i < sizeof(mods) / sizeof(*mods) && i < size; ++i) {
-	if (mods[i] == NULL) {	//first empty slot
-	    break;
-	} else {
-	    saved[i] = *mods[i];
-	}
+	if (mods[i] == NULL) break;	//first empty slot
+	saved[i] = *mods[i];
     }
     return i;
 }
