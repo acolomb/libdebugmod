@@ -181,15 +181,13 @@ debug_mod_save(debug_mod saved[],
 	       debug_mod_index_t size)
 {
     debug_mod_index_t i;
-    debug_mod **dm;
 
     // Loop through module list
-    for (i = 0, dm = mods; dm < mods + sizeof(mods); ++dm) {
-	if (*dm == NULL) {	//first empty slot
+    for (i = 0; i < sizeof(mods) / sizeof(*mods) && i < size; ++i) {
+	if (mods[i] == NULL) {	//first empty slot
 	    break;
 	} else {
-	    saved[i] = **dm;
-	    if (++i >= size) break;
+	    saved[i] = *mods[i];
 	}
     }
     return i;
@@ -202,18 +200,16 @@ debug_mod_restore(debug_mod saved[],
 		  debug_mod_index_t size)
 {
     debug_mod_index_t i;
-    debug_mod **dm;
 
     // Loop through module list
-    for (i = 0, dm = mods; dm < mods + sizeof(mods); ++dm) {
-	if (*dm == NULL) {		//empty slot
+    for (i = 0; i < sizeof(mods) / sizeof(*mods) && i < size; ++i) {
+	if (mods[i] == NULL) {		//empty slot
 	    // Point slot to the saved stream configuration
-	    *dm = saved + i;
-	} else if ((*dm)->module && saved[i].module &&
-		   0 == strcmp((*dm)->module, saved[i].module)) {
-	    debug_mod_copy_config(*dm, saved + i);
+	    mods[i] = saved + i;
+	} else if (mods[i]->module && saved[i].module &&
+		   0 == strcmp(mods[i]->module, saved[i].module)) {
+	    debug_mod_copy_config(mods[i], saved + i);
 	} else continue;
-	if (++i >= size) break;	//end of saved entries
     }
     return i;
 }
